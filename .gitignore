@@ -290,6 +290,7 @@ pyrightconfig.json
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
+bot.db
 ehthumbs_vista.db
 
 # Dump file
