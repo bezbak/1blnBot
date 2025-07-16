@@ -5,7 +5,7 @@ from aiogram.filters import Command
 from aiogram.types import InputMediaPhoto, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardMarkup, InlineKeyboardButton
 from config import BOT_TOKEN, ADMIN_USERNAME, CHANNEL_ID, WELCOME_IMAGE, REGISTRATION_URL
-from database import init_db, get_user, create_user, update_user, save_message_id, get_message_id, mark_user_registered
+from database import init_db, get_user, create_user, update_user, save_message_id, get_message_id, mark_user_registered, is_user_authenticated, is_user_has_lang, is_user_sub
 from keyboards import language_keyboard, channel_keyboard, main_menu_keyboard, back_keyboard, registration_keyboard, signal_keyboard
 from translations import TRANSLATIONS
 
@@ -71,12 +71,36 @@ async def start_command(message: types.Message):
         await message.delete()
     except:
         pass
+    lang = is_user_has_lang(user_id=user_id)
+    if lang and not is_user_sub(user_id=user_id):
+        await edit_message(
+            user_id=user_id,
+            text=TRANSLATIONS[lang]['subscribe_text'],
+            reply_markup=channel_keyboard(lang)
+        )
+    elif is_user_sub(user_id=user_id):
+        try:
+            await message.delete()
+        except:
+            pass
 
-    msg = await message.answer(
-        text=TRANSLATIONS['ru']['choose_language'],
-        reply_markup=language_keyboard()
-    )
-    save_message_id(user_id, msg.message_id)
+        # Путь к изображению
+        image_path = os.path.join("images", "main.png")
+        photo = FSInputFile(image_path)
+
+        # Отправляем новое сообщение с фото и кнопками
+        await bot.send_photo(
+            chat_id=user_id,
+            photo=photo,
+            caption=TRANSLATIONS[lang]['welcome_text'],
+            reply_markup=main_menu_keyboard(lang)
+        )
+    else:
+        msg = await message.answer(
+            text=TRANSLATIONS['ru']['choose_language'],
+            reply_markup=language_keyboard()
+        )
+        save_message_id(user_id, msg.message_id)
 
 
 @dp.callback_query(lambda c: c.data.startswith("lang_"))
@@ -131,7 +155,7 @@ async def main_menu(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     user = get_user(user_id)
     lang = user[1] if user else 'ru'
-    
+
     try:
         await callback.message.delete()
     except:
@@ -147,7 +171,7 @@ async def main_menu(callback: types.CallbackQuery):
         photo=photo,
         caption=TRANSLATIONS[lang]['welcome_text'],
         reply_markup=main_menu_keyboard(lang)
-    )   
+    )
 
 
 @dp.callback_query(lambda c: c.data == "registration")
@@ -155,21 +179,22 @@ async def registration_handler(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     user = get_user(user_id)
     lang = user[1] if user else 'ru'
-    
+
     try:
         await callback.message.delete()
     except:
         pass
-    
+
     image_path = os.path.join("images", "register.png")
     photo = FSInputFile(image_path)
-    
+
     await bot.send_photo(
         chat_id=user_id,
         photo=photo,
         caption=TRANSLATIONS[lang]['registration_text'],
         reply_markup=registration_keyboard(lang)
     )
+
 
 @dp.callback_query(lambda c: c.data == "real_registration")
 async def real_registration_handler(callback: types.CallbackQuery):
@@ -182,10 +207,12 @@ async def real_registration_handler(callback: types.CallbackQuery):
         text=TRANSLATIONS[lang]['registration_link_msg'],
         reply_markup=InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text=TRANSLATIONS[lang]['open_register_btn'], url=REGISTRATION_URL)]
+                [InlineKeyboardButton(
+                    text=TRANSLATIONS[lang]['open_register_btn'], url=REGISTRATION_URL)]
             ]
         )
     )
+
 
 @dp.callback_query(lambda c: c.data == "instruction")
 async def instruction_handler(callback: types.CallbackQuery):

@@ -7,7 +7,7 @@ def init_db():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER PRIMARY KEY,
-                lang TEXT DEFAULT 'ru',
+                lang TEXT DEFAULT '',
                 is_subscribed BOOLEAN DEFAULT 0,
                 is_registered BOOLEAN DEFAULT 0,
                 last_message_id INTEGER
@@ -21,7 +21,7 @@ def get_user(user_id):
         cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
         return cursor.fetchone()
 
-def create_user(user_id, lang='ru'):
+def create_user(user_id, lang=''):
     with closing(sqlite3.connect('bot.db')) as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -55,3 +55,16 @@ def mark_user_registered(user_id: int):
         cursor = conn.cursor()
         cursor.execute("UPDATE users SET is_registered = 1 WHERE user_id = ?", (user_id,))
         conn.commit()
+        
+def is_user_authenticated(user_id:int):
+    user = get_user(user_id)
+    return True if user[3] else False
+
+def is_user_has_lang(user_id:int):
+    user = get_user(user_id)
+    return user[1] if user[1] else False
+    
+def is_user_sub(user_id:int):
+    user = get_user(user_id)
+    return True if user[2] else False
+    
