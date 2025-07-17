@@ -1,0 +1,66 @@
+body {
+  background: #000;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+.container {
+  padding: 20px;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.btn-device,
+.btn-home {
+  background: #0f0;
+  border-radius: 20px;
+  padding: 5px 15px;
+  border: none;
+  color: #000;
+}
+
+.channel-button {
+  background: #011;
+  border-radius: 15px;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.channel-button a {
+  color: #0ff;
+  text-decoration: none;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.game-card {
+  background: #111;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 0 0 20px #0ff;
+}
+
+.game-card img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.game-card button {
+  margin-top: 10px;
+  background: #0f0;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+  width: 100%;
+}
