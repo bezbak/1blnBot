@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Больше или Меньше</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .game {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .number {
+      font-size: 4rem;
+      color: #facc15;
+      margin-bottom: 20px;
+      visibility: hidden;
+    }
+
+    .signal-btn {
+      background: #6366f1;
+      color: white;
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    .signal-btn:disabled {
+      background: #334155;
+      cursor: not-allowed;
+    }
+
+    .progress-bar {
+      margin-top: 15px;
+      width: 100%;
+      height: 8px;
+      background: #334155;
+      border-radius: 5px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(to right, #8b5cf6, #6366f1);
+      animation: loadBar 3s linear forwards;
+    }
+
+    @keyframes loadBar {
+      from {
+        width: 0%;
+      }
+      to {
+        width: 100%;
+      }
+    }
+
+    .random-label {
+      margin-top: 25px;
+      font-size: 1.3rem;
+      display: none;
+    }
+
+    .random-btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: default;
+      color: white;
+      background: #22c55e;
+      display: none;
+    }
+
+    .play-again {
+      margin-top: 20px;
+      background: #f59e0b;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <div class="number" id="target">--</div>
+    <button class="signal-btn" id="signal">Сигнал</button>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="random-label" id="randomLabel">Результат:</div>
+    <button class="random-btn" id="randomBtn">--</button>
+    <button class="play-again" id="again">Играть снова</button>
+  </div>
+
+  <script>
+    const targetEl = document.getElementById("target");
+    const signalBtn = document.getElementById("signal");
+    const progressBar = document.getElementById("progressBar");
+    const progressFill = document.getElementById("progressFill");
+    const randomLabel = document.getElementById("randomLabel");
+    const randomBtn = document.getElementById("randomBtn");
+    const againBtn = document.getElementById("again");
+
+    function resetGame() {
+      targetEl.style.visibility = "hidden";
+      targetEl.textContent = "--";
+      signalBtn.disabled = false;
+      progressBar.style.display = "none";
+      progressFill.style.animation = "none";
+      randomLabel.style.display = "none";
+      randomBtn.style.display = "none";
+      againBtn.style.display = "none";
+    }
+
+    signalBtn.onclick = () => {
+      signalBtn.disabled = true;
+      progressBar.style.display = "block";
+      progressFill.style.animation = "loadBar 3s linear forwards";
+
+      setTimeout(() => {
+        const number = Math.floor(Math.random() * 100) + 1;
+        const outcome = Math.random() > 0.5 ? "Больше" : "Меньше";
+
+        targetEl.textContent = number;
+        targetEl.style.visibility = "visible";
+        randomBtn.textContent = outcome;
+        randomLabel.style.display = "block";
+        if(outcome === 'Больше'){
+            randomBtn.style.backgroundColor = '#22c55e'
+        }else{
+            randomBtn.style.backgroundColor = 'rgb(197 34 34)'
+
+        }
+        randomBtn.style.display = "inline-block";
+        againBtn.style.display = "inline-block";
+      }, 3000);
+    };
+
+    againBtn.onclick = () => {
+      resetGame();
+    };
+
+    // старт
+    resetGame();
+  </script>
+</body>
+</html>
