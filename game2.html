@@ -1,153 +1,175 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
   <meta charset="UTF-8">
-  <title>Astronaut</title>
+  <title>Мины</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      background: #000;
-      color: white;
+      background: #0c0e1a;
+      color: #fff;
       font-family: Arial, sans-serif;
-    }
-
-    .game-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px;
-    }
-
-    .header {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-    }
-
-    .header img {
-      height: 30px;
-    }
-
-    .game-box {
-      width: 100%;
-      max-width: 400px;
-      background: #111;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 0 15px #000;
-    }
-
-    iframe {
-      width: 100%;
-      height: 480px;
-      border: none;
-      pointer-events: auto;
-    }
-
-    .coefficient-display {
-      margin-top: 15px;
-      padding: 20px;
-      background: #111;
-      border-top: 2px solid #2A9D8F;
-      font-size: 32px;
       text-align: center;
-      color: #2A9D8F;
-      font-weight: bold;
-      text-shadow: 0 0 5px #2A9D8F;
-      animation: flicker 1.5s infinite;
-      border-radius: 12px;
+      padding: 20px;
     }
 
-    @keyframes flicker {
+    .title {
+      font-size: 32px;
+      font-weight: bold;
+    }
 
-      0%,
-      100% {
-        opacity: 1;
-      }
+    .subtitle {
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: #aaa;
+    }
 
-      50% {
-        opacity: 0.7;
-      }
+    .flag {
+      height: 24px;
+      vertical-align: middle;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-gap: 8px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .cell {
+      width: 60px;
+      height: 60px;
+      background: #1b2430;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 24px;
+      color: gold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .cell.star::before {
+      content: "★";
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #0057ff;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .counter {
+      font-size: 18px;
+      color: white;
+      background: #111;
+      border-radius: 8px;
+      padding: 5px 15px;
     }
 
     @media (max-width: 480px) {
-      .coefficient-display {
-        font-size: 24px;
-        padding: 15px;
-        width: 100%;
+      .grid {
+        grid-template-columns: repeat(5, 50px);
+        grid-gap: 6px;
       }
 
-      iframe {
-        height: 480px;
-        width: 100%;
-      }
-      .header-content{
-        display: none;
-      }
-      .header img {
-        height: 24px;
+      .cell {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
       }
     }
   </style>
 </head>
-
 <body>
 
-  <div class="game-container">
+  <div class="title">5 БОМБ <img src="flag.png" class="flag" alt="RU"></div>
+  <div class="subtitle">Точность сигнала: 85%</div>
 
-    <div class="header">
-      <img src="logo1.png" alt="1win">
-      <img src="game1.png" alt="Astronaut">
-    </div>
-
-    <div class="game-box">
-      <iframe src="https://100hp.app/astronaut/vgs/?b=demo&language=ru&pid=1win&pik=01961b0c-84c8-7d20-a319-48c736b3b49d"
-        sandbox="allow-scripts allow-same-origin allow-forms" allow="encrypted-media" scrolling="no" muted></iframe>
-    </div>
-
-    <div class="coefficient-display" id="coefficient">Ожидаем старт...</div>
+  <div class="controls">
+    <button class="btn" onclick="decreaseMines()">−</button>
+    <div class="counter" id="mineCount">5 БОМБ</div>
+    <button class="btn" onclick="increaseMines()">+</button>
   </div>
 
+  <div class="grid" id="grid"></div>
+
+  <button class="btn" onclick="revealSignal()">ПОЛУЧИТЬ СИГНАЛ</button>
+
   <script>
-    const phrases = [
-      "1.24x",
-      "5.68x",
-      "2.14x",
-      "7.86x",
-      "3.47x",
-      "0.96x",
-      "1.83x",
-      "10.24x",
-      "0.75x",
-    ];
-    function muteMe(elem) {
-      elem.muted = true;
-      elem.pause();
+    const gridSize = 5;
+    let mineCount = 5;
+
+    const mineCounter = document.getElementById('mineCount');
+    const gridElement = document.getElementById('grid');
+
+    function createGrid() {
+      gridElement.innerHTML = '';
+      for (let i = 0; i < gridSize * gridSize; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        gridElement.appendChild(cell);
+      }
     }
 
-    // Try to mute all video and audio elements on the page
-    function mutePage() {
-      document.querySelectorAll("video, audio").forEach((elem) => muteMe(elem));
+    function updateMineCounter() {
+      mineCounter.textContent = `${mineCount} мин`;
     }
 
-    function changeText() {
-      const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-      document.getElementById('coefficient').innerText = randomPhrase;
+    function increaseMines() {
+      if (mineCount < 25) {
+        mineCount++;
+        updateMineCounter();
+      }
     }
 
-    setInterval(changeText, 7000);
-    changeText();
+    function decreaseMines() {
+      if (mineCount > 1) {
+        mineCount--;
+        updateMineCounter();
+      }
+    }
+
+    function revealSignal() {
+      const cells = Array.from(document.querySelectorAll('.cell'));
+      cells.forEach(c => c.classList.remove('star'));
+
+      const starIndexes = [];
+
+      while (starIndexes.length < mineCount) {
+        const idx = Math.floor(Math.random() * cells.length);
+        if (!starIndexes.includes(idx)) {
+          starIndexes.push(idx);
+        }
+      }
+
+      starIndexes.forEach(i => {
+        cells[i].classList.add('star');
+      });
+    }
+
+    // init
+    createGrid();
+    updateMineCounter();
   </script>
 
 </body>
-
 </html>
