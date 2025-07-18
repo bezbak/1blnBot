@@ -11,25 +11,47 @@
 <body>
     <div class="container">
         <div class="header">
-            <button class="btn-device">🖥 ПК</button>
-            <button class="btn-home">🏠</button>
+            <button class="neon-glow btn-device">🖥 ПК</button>
+            <button class="neon-glow btn-home"><img src="home.png" alt=""></button>
         </div>
-        <div class="channel-button">
+        <div class="channel-button neon-glow">
             <a href="https://t.me/OneBILLIONN" target="_blank">🚀 One BILLIONN</a>
         </div>
 
         <div class="game-grid">
-            <div class="game-card">
-                <img src="astronaut.jpg" alt="Astronaut">
+            <a href="1game.html" class="neon-glow game-card">
+                <img src="game1.png" alt="Astronaut">
                 <button>ОТКРЫТЬ</button>
-            </div>
-            <div class="game-card">
-                <img src="mines.jpg" alt="Mines">
+            </a>
+            <a class="neon-glow game-card">
+                <img src="game2.webp" alt="Mines">
                 <button>ОТКРЫТЬ</button>
-            </div>
+            </a>
             <!-- Добавляешь аналогично -->
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const ua = navigator.userAgent.toLowerCase();
+            let device = { icon: '🖥', text: 'ПК' };
+
+            if (/android/i.test(ua)) {
+                device = { icon: '📱', text: 'Android' };
+            } else if (/iphone|ipod/i.test(ua)) {
+                device = { icon: '📱', text: 'iPhone' };
+            } else if (/ipad/i.test(ua)) {
+                device = { icon: '📱', text: 'iPad' };
+            } else if (/windows phone/i.test(ua)) {
+                device = { icon: '📱', text: 'Windows Phone' };
+            } else if (/macintosh/i.test(ua) && 'ontouchend' in document) {
+                device = { icon: '📱', text: 'iPad (Mac Touch)' };
+            }
+
+            $('.btn-device').html(`${device.icon} ${device.text}`);
+        });
+    </script>
+
 </body>
 
 </html>
