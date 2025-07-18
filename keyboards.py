@@ -53,7 +53,7 @@ def main_menu_keyboard(lang):
     builder.row(
         InlineKeyboardButton(
             text=TRANSLATIONS[lang]['signal_btn'],
-            callback_data="get_signal"
+            url="t.me/OneBILLIONN_bot/oneBLNapps"
         )
     )
     return builder.as_markup()

@@ -102,6 +102,24 @@ async def start_command(message: types.Message):
         )
         save_message_id(user_id, msg.message_id)
 
+@dp.message(Command("reg_ch"))
+async def reg_command(message: types.Message):
+    user_id = message.from_user.id
+    # Удаляем предыдущие сообщения
+    try:
+        await message.delete()
+    except:
+        pass
+    user = get_user(user_id)
+    reg = is_user_authenticated(user_id=user_id)
+    
+    lang = user[1] if user else 'ru'
+    
+    await edit_message(
+        user_id=user_id,
+        text= f"{'Зареган' if reg else 'Не зареган'}",
+        reply_markup=channel_keyboard(lang)
+    )
 
 @dp.callback_query(lambda c: c.data.startswith("lang_"))
 async def process_language(callback: types.CallbackQuery):
