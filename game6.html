@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviator Clone</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .game {
+      text-align: center;
+    }
+
+    .circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: #121022;
+      border: 4px solid #f43f5e;
+      color: white;
+      font-size: 2.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .circle.disabled {
+      cursor: default;
+    }
+
+    .progress {
+      width: 100%;
+      max-width: 300px;
+      height: 8px;
+      background: #333;
+      margin: 30px auto 0;
+      border-radius: 5px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #ff0033, #f43f5e);
+      animation: none;
+    }
+
+    @keyframes fill {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <div class="circle" id="circle">Сигнал</div>
+    <div class="progress" id="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+
+  <script>
+    const circle = document.getElementById("circle");
+    const progress = document.getElementById("progress");
+    const progressBar = document.getElementById("progressBar");
+
+    let isRunning = false;
+
+    circle.addEventListener("click", () => {
+      if (isRunning) return;
+      isRunning = true;
+
+      // Показываем случайное число от 1.00x до 10.00x
+      const randomValue = (Math.random() * 9 + 1).toFixed(2);
+      circle.textContent = `${randomValue}X`;
+      circle.classList.add("disabled");
+
+      // Показываем загрузку
+      progress.style.display = "block";
+      progressBar.style.animation = "fill 15s linear forwards";
+
+      // Через 15 секунд — сброс
+      setTimeout(() => {
+        circle.textContent = "Сигнал";
+        circle.classList.remove("disabled");
+        progress.style.display = "none";
+        progressBar.style.animation = "none";
+        isRunning = false;
+      }, 15000);
+    });
+  </script>
+</body>
+</html>

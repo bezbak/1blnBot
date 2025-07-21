@@ -64,7 +64,7 @@
       height: 100%;
       width: 0;
       background: linear-gradient(to right, #8b5cf6, #6366f1);
-      animation: loadBar 3s linear forwards;
+      animation: none;
     }
 
     @keyframes loadBar {
@@ -74,12 +74,6 @@
       to {
         width: 100%;
       }
-    }
-
-    .random-label {
-      margin-top: 25px;
-      font-size: 1.3rem;
-      display: none;
     }
 
     .random-btn {
@@ -93,29 +87,16 @@
       background: #22c55e;
       display: none;
     }
-
-    .play-again {
-      margin-top: 20px;
-      background: #f59e0b;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 999px;
-      font-weight: bold;
-      display: none;
-    }
   </style>
 </head>
 <body>
   <div class="game">
     <div class="number" id="target">--</div>
+    <button class="random-btn" id="randomBtn">--</button>
     <button class="signal-btn" id="signal">Сигнал</button>
     <div class="progress-bar" id="progressBar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
-    <div class="random-label" id="randomLabel">Результат:</div>
-    <button class="random-btn" id="randomBtn">--</button>
-    <button class="play-again" id="again">Играть снова</button>
   </div>
 
   <script>
@@ -123,51 +104,46 @@
     const signalBtn = document.getElementById("signal");
     const progressBar = document.getElementById("progressBar");
     const progressFill = document.getElementById("progressFill");
-    const randomLabel = document.getElementById("randomLabel");
     const randomBtn = document.getElementById("randomBtn");
-    const againBtn = document.getElementById("again");
 
-    function resetGame() {
+    function resetState() {
       targetEl.style.visibility = "hidden";
       targetEl.textContent = "--";
-      signalBtn.disabled = false;
+      randomBtn.style.display = "none";
       progressBar.style.display = "none";
       progressFill.style.animation = "none";
-      randomLabel.style.display = "none";
-      randomBtn.style.display = "none";
-      againBtn.style.display = "none";
+    }
+
+    function startLoadingAnimation() {
+      progressFill.style.animation = "none";
+      void progressFill.offsetWidth;
+      progressFill.style.animation = "loadBar 3s linear forwards";
+      progressBar.style.display = "block";
     }
 
     signalBtn.onclick = () => {
       signalBtn.disabled = true;
-      progressBar.style.display = "block";
-      progressFill.style.animation = "loadBar 3s linear forwards";
+      resetState();
+
+      const number = Math.floor(Math.random() * 100) + 1;
+      const outcome = Math.random() > 0.5 ? "Больше" : "Меньше";
+
+      targetEl.textContent = number;
+      targetEl.style.visibility = "visible";
+
+      randomBtn.textContent = outcome;
+      randomBtn.style.backgroundColor = outcome === "Больше" ? "#22c55e" : "rgb(197 34 34)";
+      randomBtn.style.display = "inline-block";
+
+      startLoadingAnimation();
 
       setTimeout(() => {
-        const number = Math.floor(Math.random() * 100) + 1;
-        const outcome = Math.random() > 0.5 ? "Больше" : "Меньше";
-
-        targetEl.textContent = number;
-        targetEl.style.visibility = "visible";
-        randomBtn.textContent = outcome;
-        randomLabel.style.display = "block";
-        if(outcome === 'Больше'){
-            randomBtn.style.backgroundColor = '#22c55e'
-        }else{
-            randomBtn.style.backgroundColor = 'rgb(197 34 34)'
-
-        }
-        randomBtn.style.display = "inline-block";
-        againBtn.style.display = "inline-block";
+        signalBtn.disabled = false;
       }, 3000);
     };
 
-    againBtn.onclick = () => {
-      resetGame();
-    };
-
-    // старт
-    resetGame();
+    // Инициализация
+    resetState();
   </script>
 </body>
 </html>

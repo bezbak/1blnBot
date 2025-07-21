@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Astronaut</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .header img {
+      height: 30px;
+    }
+
+    .game-box {
+      width: 100%;
+      max-width: 400px;
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 15px #000;
+    }
+
+    iframe {
+      width: 100%;
+      height: 480px;
+      border: none;
+      pointer-events: auto;
+    }
+
+    .coefficient-display {
+      margin-top: 15px;
+      padding: 20px;
+      background: #111;
+      border-top: 2px solid #2A9D8F;
+      font-size: 32px;
+      text-align: center;
+      color: #2A9D8F;
+      font-weight: bold;
+      text-shadow: 0 0 5px #2A9D8F;
+      animation: flicker 1.5s infinite;
+      border-radius: 12px;
+    }
+
+    @keyframes flicker {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .coefficient-display {
+        font-size: 24px;
+        padding: 15px;
+        width: 100%;
+      }
+
+      iframe {
+        height: 480px;
+        width: 100%;
+      }
+      .header-content{
+        display: none;
+      }
+      .header img {
+        height: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="game-container">
+
+    <div class="header">
+      <img src="logo1.png" alt="1win">
+      <img src="game1.png" alt="Astronaut">
+    </div>
+
+    <div class="game-box">
+      <iframe src="https://demo.spribe.io/launch/aviator?currency=USD&lang=ru&return_url=https://1xlite-41901.pro/slots"
+        sandbox="allow-scripts allow-same-origin allow-forms" allow="encrypted-media" scrolling="no" muted></iframe>
+    </div>
+
+    <div class="coefficient-display" id="coefficient">Ожидаем старт...</div>
+  </div>
+
+  <script>
+    const phrases = [
+      "1.24x",
+      "5.68x",
+      "2.14x",
+      "7.86x",
+      "3.47x",
+      "0.96x",
+      "1.83x",
+      "10.24x",
+      "0.75x",
+    ];
+    function muteMe(elem) {
+      elem.muted = true;
+      elem.pause();
+    }
+
+    // Try to mute all video and audio elements on the page
+    function mutePage() {
+      document.querySelectorAll("video, audio").forEach((elem) => muteMe(elem));
+    }
+
+    function changeText() {
+      const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+      document.getElementById('coefficient').innerText = randomPhrase;
+    }
+
+    setInterval(changeText, 7000);
+    changeText();
+  </script>
+
+</body>
+
+</html>

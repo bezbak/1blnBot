@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Football Kick Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      background: #d6e6f5;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .game-container {
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .progress-wrapper {
+      position: relative;
+      height: 40px;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4ade80, #16a34a);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .milestones {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 12px;
+      color: #333;
+    }
+
+    .goal {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .slot {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 50%;
+      border: 2px solid #aaa;
+      background-image: url('ball1.png'); /* белый мяч */
+      background-size: 40%;
+      background-repeat: no-repeat;
+      background-position: center;
+      transition: background 0.3s;
+    }
+
+    .slot.active {
+      background-image: url('ball2.png'); /* футбольный */
+      background-color: #f43f5e;
+      background-size: 60%;
+      border-color: #f43f5e;
+    }
+
+    .kick-btn {
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .kick-btn:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+
+    /* ✅ Адаптив до 380px */
+    @media (max-width: 400px) {
+      .slot {
+        width: 42px;
+        height: 42px;
+        background-size: 30%;
+      }
+
+      .slot.active {
+        background-size: 50%;
+      }
+
+      .kick-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
+      .milestones {
+        font-size: 10px;
+      }
+
+      .goal {
+        gap: 6px;
+      }
+
+      .progress-wrapper {
+        height: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="progress-wrapper">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="milestones">
+        <span>X2</span>
+        <span>X4</span>
+        <span>X12</span>
+        <span>X20</span>
+        <span>X32</span>
+      </div>
+    </div>
+
+    <div class="goal" id="goalSlots"></div>
+    <button class="kick-btn" id="kickBtn">KICK</button>
+  </div>
+
+  <script>
+    const totalSlots = 15;
+    const progressFill = document.getElementById('progressFill');
+    const goalSlots = document.getElementById('goalSlots');
+    const kickBtn = document.getElementById('kickBtn');
+
+    let usedIndices = [];
+
+    function createSlots() {
+      goalSlots.innerHTML = '';
+      for (let i = 0; i < totalSlots; i++) {
+        const slot = document.createElement('div');
+        slot.classList.add('slot');
+        goalSlots.appendChild(slot);
+      }
+    }
+
+    function resetGame() {
+      usedIndices = [];
+      createSlots();
+      progressFill.style.width = '0%';
+      kickBtn.disabled = false;
+    }
+
+    function handleKick() {
+      const availableIndices = [...Array(totalSlots).keys()].filter(i => !usedIndices.includes(i));
+      if (availableIndices.length === 0) return;
+
+      const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+      usedIndices.push(randomIndex);
+
+      const slots = document.querySelectorAll('.slot');
+      slots[randomIndex].classList.add('active');
+
+      // Обновляем прогресс
+      const percent = (usedIndices.length / 5) * 100;
+      progressFill.style.width = `${percent}%`;
+
+      if (usedIndices.length === 5) {
+        kickBtn.disabled = true;
+        setTimeout(resetGame, 2000);
+      }
+    }
+
+    kickBtn.addEventListener('click', handleKick);
+    resetGame();
+  </script>
+</body>
+</html>

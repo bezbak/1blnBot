@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CoinFlip Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .game-container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .info {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .result {
+      font-size: 40px;
+      margin: 20px 0;
+    }
+
+    .btn {
+      padding: 12px 30px;
+      background: #007bff;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    @media (max-width: 380px) {
+      .game-container {
+        padding: 15px;
+      }
+
+      .info {
+        font-size: 14px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+
+      .result {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-container">
+    <div class="info" id="roundInfo">Раунд: 1 / 7</div>
+    <div class="info" id="coefInfo">Коэффициент: </div>
+    <div class="result" id="flipResult">🪙</div>
+    <button class="btn" id="flipBtn">Бросить</button>
+  </div>
+
+  <script>
+    const flipBtn = document.getElementById("flipBtn");
+    const roundInfo = document.getElementById("roundInfo");
+    const coefInfo = document.getElementById("coefInfo");
+    const flipResult = document.getElementById("flipResult");
+
+    let round = 1;
+    const maxRounds = 7;
+    let baseCoef = getRandomStartCoef();
+
+    coefInfo.textContent = `Коэффициент: x${baseCoef}`;
+    function getRandomStartCoef() {
+      return Math.floor(Math.random() * 10) + 1; // от 1 до 10
+    }
+
+
+    function resetGame() {
+      setTimeout(() => {
+        round = 1;
+        baseCoef = getRandomStartCoef();
+        updateUI("🪙");
+      }, 1500);
+    }
+
+    function updateUI(emoji) {
+      roundInfo.textContent = `Раунд: ${round} / ${maxRounds}`;
+      coefInfo.textContent = `Коэффициент: x${baseCoef * Math.pow(2, round - 1)}`;
+      flipResult.textContent = emoji;
+    }
+
+    function flipCoin() {
+
+
+      if (round >= maxRounds) {
+        resetGame();
+      } else {
+        const result = Math.random() < 0.5 ? "heads" : "tails";
+        const emoji = result === "heads" ? "Орёл" : "Решка";
+
+        // coef *= 2;
+        updateUI(emoji);
+        round++;
+      }
+    }
+
+    flipBtn.addEventListener("click", flipCoin);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Мины</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #0e0f1e;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      background: linear-gradient(to right, #ffcf00, #ff8800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .cell {
+      width: 60px;
+      height: 60px;
+      perspective: 800px;
+    }
+
+    .inner {
+      width: 100%;
+      height: 100%;
+      background: #1d2233;
+      border-radius: 8px;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .cell.flipped .inner {
+      transform: rotateY(180deg);
+    }
+
+    .front, .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .front {
+      background: #1d2233;
+    }
+
+    .back {
+      background: linear-gradient(145deg, #3a3f60, #2c314d);
+      transform: rotateY(180deg);
+      color: gold;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px;
+    }
+
+    .btn {
+      background: linear-gradient(to right, #007aff, #0051ff);
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .btn:hover {
+      background: linear-gradient(to right, #0051ff, #0038c9);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .counter {
+      font-size: 18px;
+      color: white;
+      background: #111;
+      border-radius: 8px;
+      padding: 6px 15px;
+      min-width: 80px;
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: repeat(5, 50px);
+        grid-gap: 8px;
+      }
+
+      .cell {
+        width: 50px;
+        height: 50px;
+      }
+
+      .front, .back {
+        font-size: 22px;
+      }
+
+      .btn {
+        padding: 8px 18px;
+        font-size: 15px;
+      }
+
+      .counter {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="title">МИНЫ</div>
+  <div class="subtitle">Точность сигнала: 85%</div>
+
+  <div class="controls">
+    <button class="btn" onclick="decreaseMines()">−</button>
+    <div class="counter" id="mineCount">5 мин</div>
+    <button class="btn" onclick="increaseMines()">+</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <button class="btn" onclick="revealSignal()">ПОЛУЧИТЬ СИГНАЛ</button>
+
+  <script>
+    const gridSize = 5;
+    const maxMines = 20;
+    let mineCount = 5;
+
+    const mineCounter = document.getElementById('mineCount');
+    const gridElement = document.getElementById('grid');
+
+    function createGrid() {
+      gridElement.innerHTML = '';
+      for (let i = 0; i < gridSize * gridSize; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+
+        const inner = document.createElement('div');
+        inner.classList.add('inner');
+
+        const front = document.createElement('div');
+        front.classList.add('front');
+
+        const back = document.createElement('div');
+        back.classList.add('back');
+        back.textContent = "★";
+
+        inner.appendChild(front);
+        inner.appendChild(back);
+        cell.appendChild(inner);
+        gridElement.appendChild(cell);
+      }
+    }
+
+    function updateMineCounter() {
+      mineCounter.textContent = `${mineCount} мин`;
+    }
+
+    function increaseMines() {
+      if (mineCount < maxMines) {
+        mineCount++;
+        updateMineCounter();
+      }
+    }
+
+    function decreaseMines() {
+      if (mineCount > 1) {
+        mineCount--;
+        updateMineCounter();
+      }
+    }
+
+    function revealSignal() {
+      const cells = Array.from(document.querySelectorAll('.cell'));
+      cells.forEach(c => c.classList.remove('flipped'));
+
+      const availableIndexes = Array.from({ length: cells.length }, (_, i) => i);
+      const starIndexes = [];
+
+      while (starIndexes.length < mineCount && availableIndexes.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availableIndexes.length);
+        starIndexes.push(availableIndexes.splice(randomIndex, 1)[0]);
+      }
+
+      starIndexes.forEach((index, i) => {
+        setTimeout(() => {
+          cells[index].classList.add('flipped');
+        }, i * 200); // задержка между flip
+      });
+    }
+
+    // Инициализация
+    createGrid();
+    updateMineCounter();
+  </script>
+
+</body>
+</html>
