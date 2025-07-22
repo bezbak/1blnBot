@@ -71,7 +71,9 @@ body {
 
 .game-card button {
   margin-top: 10px;
-  background: #0f0;
+  background: #002b00;
+  font-size: 20px;
+  font-weight: 600;
   color: #fefefe;
   border: none;
   border-radius: 20px;
