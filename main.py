@@ -93,7 +93,7 @@ async def start_command(message: types.Message):
             chat_id=user_id,
             photo=photo,
             caption=TRANSLATIONS[lang]['welcome_text'],
-            reply_markup=main_menu_keyboard(lang)
+            reply_markup=main_menu_keyboard(lang, message.from_user.id)
         )
     else:
         msg = await message.answer(
@@ -159,7 +159,7 @@ async def check_subscription(callback: types.CallbackQuery):
             chat_id=user_id,
             photo=photo,
             caption=TRANSLATIONS[lang]['welcome_text'],
-            reply_markup=main_menu_keyboard(lang)
+            reply_markup=main_menu_keyboard(lang, message.from_user.id)
         )
     else:
         await callback.answer(
@@ -188,7 +188,7 @@ async def main_menu(callback: types.CallbackQuery):
         chat_id=user_id,
         photo=photo,
         caption=TRANSLATIONS[lang]['welcome_text'],
-        reply_markup=main_menu_keyboard(lang)
+        reply_markup=main_menu_keyboard(lang, callback.from_user.id)
     )
 
 
