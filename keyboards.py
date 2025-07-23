@@ -61,8 +61,8 @@ def main_menu_keyboard(lang, user_id):
     )
 
     if is_user_authenticated(user_id) and is_user_sub(user_id):
-        print(is_user_authenticated(user_id))
-        print(is_user_sub(user_id))
+        # print(is_user_authenticated(user_id))
+        # print(is_user_sub(user_id))
         builder.row(
             InlineKeyboardButton(
                 text=TRANSLATIONS[lang]['signal_btn'],
