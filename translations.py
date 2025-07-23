@@ -12,7 +12,7 @@ TRANSLATIONS = {
         'help_btn': '🆘 Помощь',
         'signal_btn': '🏆 Получить сигнал 🏆',
         'back_btn': '⬅️ Назад',
-        'registration_text': """✦ При регистрации обязательно вводите промокод - <b>ONEBLN<b/>
+        'registration_text': """✦ При регистрации обязательно вводите промокод - <b>ONEBLN</b>
 
 ● После завершения регистрации, Вам автоматически придет уведомление в бота.""",
         'instruction_text': """🤖Бот основан и обучен на кластерной нейронной сети OpenAI! 
@@ -56,7 +56,7 @@ TRANSLATIONS = {
         'help_btn': '🆘 Help',
         'signal_btn': '🏆 Get signal 🏆',
         'back_btn': '⬅️ Back',
-        'registration_text': """✦ When registering, make sure to enter the promo code - <b>ONEBLN<b/>
+        'registration_text': """✦ When registering, make sure to enter the promo code - <b>ONEBLN</b>
         
 ● After completing the registration, you will automatically receive a notification from the bot""",
         'instruction_text': """🤖The bot is based on a clustered neural network by OpenAI!  
@@ -96,7 +96,7 @@ To achieve maximum profit, follow this instruction:
         'help_btn': '🆘 Жардам',
         'signal_btn': '🏆 Сигнал алуу 🏆',
         'back_btn': '⬅️ Артка',
-        'registration_text': """✦ When registering, make sure to enter the promo code - <b>ONEBLN<b/>
+        'registration_text': """✦ When registering, make sure to enter the promo code - <b>ONEBLN</b>
         
 ● After completing the registration, you will automatically receive a notification from the bot""",
         'instruction_text':  """🤖Бот OpenAI тарабынан түзүлгөн кластердик нейрондук тармакка негизделген!  

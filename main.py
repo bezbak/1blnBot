@@ -224,7 +224,6 @@ async def registration_handler(callback: types.CallbackQuery):
         caption=TRANSLATIONS[lang]['registration_text'],
         reply_markup=registration_keyboard(lang),
         parse_mode=ParseMode.HTML
-        
     )
 
 
