@@ -4,20 +4,30 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InputMediaPhoto, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardMarkup, InlineKeyboardButton
-from config import BOT_TOKEN, ADMIN_USERNAME, CHANNEL_ID, WELCOME_IMAGE, REGISTRATION_URL
+from aiogram.fsm.storage.memory import MemoryStorage
+
+from config import BOT_TOKEN, ADMIN_USERNAME, CHANNEL_ID, WELCOME_IMAGE, REGISTRATION_URL, ADMIN_ID
+from broadcast import router as broadcast_router
+from daily_fake_win import send_daily_fake_win
 from database import init_db, get_user, create_user, update_user, save_message_id, get_message_id, mark_user_registered, is_user_authenticated, is_user_has_lang, is_user_sub
 from keyboards import language_keyboard, channel_keyboard, main_menu_keyboard, back_keyboard, registration_keyboard, signal_keyboard
 from translations import TRANSLATIONS
+from database import get_user
+import aiocron
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
-
+dp = Dispatcher(storage=MemoryStorage())
+dp.include_router(broadcast_router)
 # Инициализация базы данных
 init_db()
+
+@aiocron.crontab('0 21 * * *')  # каждый день в 12:00
+async def daily_task():
+    await send_daily_fake_win(bot)
 
 
 async def edit_message(user_id: int, text: str, reply_markup=None, photo: str = None):
@@ -54,7 +64,8 @@ async def edit_message(user_id: int, text: str, reply_markup=None, photo: str = 
 
 async def check_channel_subscription(user_id):
     try:
-        member = await bot.get_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
+        member = await bot.get_chat_member(chat_id=f"@{CHANNEL_ID}", user_id=user_id)
+        
         return member.status in ['member', 'administrator', 'creator']
     except Exception as e:
         logger.error(f"Subscription check error: {e}")
@@ -159,7 +170,7 @@ async def check_subscription(callback: types.CallbackQuery):
             chat_id=user_id,
             photo=photo,
             caption=TRANSLATIONS[lang]['welcome_text'],
-            reply_markup=main_menu_keyboard(lang, message.from_user.id)
+            reply_markup=main_menu_keyboard(lang, callback.from_user.id)
         )
     else:
         await callback.answer(
@@ -287,7 +298,9 @@ async def get_signal_handler(callback: types.CallbackQuery):
         text=TRANSLATIONS[lang]['select_game_text'],
         reply_markup=signal_keyboard(lang)
     )
+async def main():
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(dp.start_polling(bot))
+    asyncio.run(main())

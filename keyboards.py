@@ -1,6 +1,6 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import WebAppInfo, InlineKeyboardButton
-from database import is_user_sub
+from database import is_user_authenticated, is_user_sub
 from translations import TRANSLATIONS
 from config import CHANNEL_ID, REGISTRATION_URL, MINI_APP_URL
 
@@ -31,18 +31,24 @@ def channel_keyboard(lang):
 
 def main_menu_keyboard(lang, user_id):
     builder = InlineKeyboardBuilder()
-
-    builder.row(
-        InlineKeyboardButton(
-            text=TRANSLATIONS[lang]['register_btn'],
-            callback_data="registration"
-        ),
-        InlineKeyboardButton(
-            text=TRANSLATIONS[lang]['instruction_btn'],
-            callback_data="instruction"
+    if not is_user_authenticated(user_id):
+        builder.row(
+            InlineKeyboardButton(
+                text=TRANSLATIONS[lang]['register_btn'],
+                callback_data="registration"
+            ),
+            InlineKeyboardButton(
+                text=TRANSLATIONS[lang]['instruction_btn'],
+                callback_data="instruction"
+            )
         )
-    )
-
+    else:
+         builder.row(
+            InlineKeyboardButton(
+                text=TRANSLATIONS[lang]['instruction_btn'],
+                callback_data="instruction"
+            )
+        )
     builder.row(
         InlineKeyboardButton(
             text=TRANSLATIONS[lang]['language_btn'],
@@ -54,7 +60,7 @@ def main_menu_keyboard(lang, user_id):
         )
     )
 
-    if is_user_sub(user_id):
+    if is_user_authenticated(user_id) and is_user_sub(user_id):
         builder.row(
             InlineKeyboardButton(
                 text=TRANSLATIONS[lang]['signal_btn'],
@@ -63,6 +69,8 @@ def main_menu_keyboard(lang, user_id):
         )
 
     return builder.as_markup()
+
+
 def back_keyboard(lang, to='main_menu'):
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(
