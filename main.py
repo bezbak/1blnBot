@@ -5,6 +5,7 @@ from aiogram.filters import Command
 from aiogram.types import InputMediaPhoto, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.enums import ParseMode 
 
 from config import BOT_TOKEN, ADMIN_USERNAME, CHANNEL_ID, WELCOME_IMAGE, REGISTRATION_URL, ADMIN_ID
 from broadcast import router as broadcast_router
@@ -221,7 +222,9 @@ async def registration_handler(callback: types.CallbackQuery):
         chat_id=user_id,
         photo=photo,
         caption=TRANSLATIONS[lang]['registration_text'],
-        reply_markup=registration_keyboard(lang)
+        reply_markup=registration_keyboard(lang),
+        parse_mode=ParseMode.HTML
+        
     )
 
 
