@@ -3,7 +3,7 @@ import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InputMediaPhoto, FSInputFile
-from aiogram.utils.keyboard import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardMarkup, InlineKeyboardButton, InlineKeyboardBuilder
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums import ParseMode 
 
@@ -242,6 +242,23 @@ async def real_registration_handler(callback: types.CallbackQuery):
                     text=TRANSLATIONS[lang]['open_register_btn'], url=REGISTRATION_URL)]
             ]
         )
+    )
+    
+    # ⏳ Ждём 5 секунд
+    await asyncio.sleep(5)
+
+    # ✅ Отправляем поздравление
+    builder = InlineKeyboardBuilder()
+    builder.row(
+        InlineKeyboardButton(
+            text=TRANSLATIONS[lang]['signal_btn'],
+            url="https://t.me/OneBILLIONN_bot/oneBLNapps"
+        )
+    )
+
+    await callback.message.answer(
+        text="🎉 Поздравляем с успешной регистрацией! 🥳",
+        reply_markup=builder.as_markup()
     )
 
 
