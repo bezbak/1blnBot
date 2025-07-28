@@ -16,6 +16,7 @@
     .title {
       font-size: 32px;
       font-weight: bold;
+      text-transform: uppercase;
     }
 
     .subtitle {
@@ -128,12 +129,12 @@
 </head>
 <body>
 
-  <div class="title">5 БОМБ </div>
-  <div class="subtitle">Точность сигнала: 85%</div>
+  <div class="title" id="mineCount2">5 БОМБ </div>
+  <div class="subtitle">Точность сигнала: 91%</div>
 
   <div class="controls">
     <button class="btn" onclick="decreaseMines()">−</button>
-    <div class="counter" id="mineCount">5 мин</div>
+    <div class="counter" id="mineCount">5 бомб</div>
     <button class="btn" onclick="increaseMines()">+</button>
   </div>
 
@@ -146,6 +147,7 @@
     let mineCount = 5;
 
     const mineCounter = document.getElementById('mineCount');
+    const mineCounter2 = document.getElementById('mineCount2');
     const gridElement = document.getElementById('grid');
 
     function createGrid() {
@@ -172,7 +174,8 @@
     }
 
     function updateMineCounter() {
-      mineCounter.textContent = `${mineCount} мин`;
+      mineCounter.textContent = `${mineCount} бомб`;
+      mineCounter2.textContent = `${mineCount} бомб`;
     }
 
     function increaseMines() {
